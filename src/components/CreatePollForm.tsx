@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,6 +11,7 @@ interface CreatePollFormProps {
 }
 
 const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState(['', '']);
@@ -45,38 +46,38 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
-        <CardTitle>創建新投票</CardTitle>
+        <CardTitle>{t('create.poll.form')}</CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">投票主題</label>
+            <label className="block text-sm font-medium mb-2">{t('poll.title')}</label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="輸入投票主題..."
+              placeholder={t('poll.title.placeholder')}
               required
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-2">描述（可選）</label>
+            <label className="block text-sm font-medium mb-2">{t('poll.description')}</label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="輸入投票描述..."
+              placeholder={t('poll.description.placeholder')}
               rows={3}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">投票選項</label>
+            <label className="block text-sm font-medium mb-2">{t('poll.options')}</label>
             {options.map((option, index) => (
               <div key={index} className="flex gap-2 mb-2">
                 <Input
                   value={option}
                   onChange={(e) => updateOption(index, e.target.value)}
-                  placeholder={`選項 ${index + 1}`}
+                  placeholder={`${t('option.placeholder')} ${index + 1}`}
                   required
                 />
                 {options.length > 2 && (
@@ -98,12 +99,12 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
               className="w-full"
             >
               <Plus className="h-4 w-4 mr-2" />
-              新增選項
+              {t('add.option')}
             </Button>
           </div>
 
           <Button type="submit" className="w-full">
-            創建投票
+            {t('create.poll')}
           </Button>
         </form>
       </CardContent>

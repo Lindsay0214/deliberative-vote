@@ -1,11 +1,13 @@
-
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import CreatePollForm from '@/components/CreatePollForm';
 import PollCard from '@/components/PollCard';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { Poll, VoteSubmission, VoteOption, Vote } from '@/types/vote';
 
 const VotingApp = () => {
+  const { t } = useTranslation();
   const [polls, setPolls] = useState<Poll[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [votedPolls, setVotedPolls] = useState<Set<string>>(new Set());
@@ -60,10 +62,14 @@ const VotingApp = () => {
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-4xl mx-auto">
+        <div className="flex justify-end mb-4">
+          <LanguageSwitcher />
+        </div>
+        
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2">投票系統</h1>
+          <h1 className="text-4xl font-bold mb-2">{t('voting.system')}</h1>
           <p className="text-muted-foreground">
-            創建投票或參與投票，附上原因的投票會有更高權重
+            {t('voting.description')}
           </p>
         </div>
 
@@ -72,7 +78,7 @@ const VotingApp = () => {
             onClick={() => setShowCreateForm(!showCreateForm)}
             size="lg"
           >
-            {showCreateForm ? '取消創建' : '創建新投票'}
+            {showCreateForm ? t('cancel.create') : t('create.new.poll')}
           </Button>
         </div>
 
@@ -86,7 +92,7 @@ const VotingApp = () => {
           {polls.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">
-                還沒有任何投票，創建第一個投票吧！
+                {t('no.polls')}
               </p>
             </div>
           ) : (

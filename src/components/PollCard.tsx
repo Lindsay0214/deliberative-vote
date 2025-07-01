@@ -1,5 +1,5 @@
-
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +14,7 @@ interface PollCardProps {
 }
 
 const PollCard = ({ poll, onVote, hasVoted = false }: PollCardProps) => {
+  const { t } = useTranslation();
   const [selectedOption, setSelectedOption] = useState('');
   const [reason, setReason] = useState('');
   const [showResults, setShowResults] = useState(hasVoted);
@@ -69,12 +70,12 @@ const PollCard = ({ poll, onVote, hasVoted = false }: PollCardProps) => {
 
             <div>
               <Label className="block text-sm font-medium mb-2">
-                投票原因（可選，附上原因會增加投票權重）
+                {t('vote.reason')}
               </Label>
               <Textarea
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
-                placeholder="請說明您的投票原因..."
+                placeholder={t('vote.reason.placeholder')}
                 rows={3}
               />
             </div>
@@ -85,22 +86,22 @@ const PollCard = ({ poll, onVote, hasVoted = false }: PollCardProps) => {
                 disabled={!selectedOption}
                 className="flex-1"
               >
-                投票
+                {t('vote')}
               </Button>
               <Button 
                 variant="outline" 
                 onClick={() => setShowResults(true)}
               >
-                查看結果
+                {t('view.results')}
               </Button>
             </div>
           </div>
         ) : (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="font-medium">投票結果</h3>
+              <h3 className="font-medium">{t('voting.results')}</h3>
               <span className="text-sm text-muted-foreground">
-                總票數: {getTotalVotes()} (加權計算)
+                {t('total.votes')}: {getTotalVotes()} ({t('weighted.calculation')})
               </span>
             </div>
             
@@ -113,7 +114,7 @@ const PollCard = ({ poll, onVote, hasVoted = false }: PollCardProps) => {
                   <div className="flex justify-between">
                     <span>{option.text}</span>
                     <span className="text-sm text-muted-foreground">
-                      {votes} 票 ({percentage}%)
+                      {votes} {t('votes')} ({percentage}%)
                     </span>
                   </div>
                   <div className="w-full bg-secondary rounded-full h-2">
@@ -129,9 +130,9 @@ const PollCard = ({ poll, onVote, hasVoted = false }: PollCardProps) => {
                         <div key={vote.id} className="text-sm text-muted-foreground">
                           {vote.reason && (
                             <div className="bg-muted p-2 rounded text-xs">
-                              <span className="font-medium">原因:</span> {vote.reason}
+                              <span className="font-medium">{t('reason')}:</span> {vote.reason}
                               <span className="ml-2 text-primary">
-                                (權重: {vote.weight})
+                                ({t('weight')}: {vote.weight})
                               </span>
                             </div>
                           )}
@@ -149,7 +150,7 @@ const PollCard = ({ poll, onVote, hasVoted = false }: PollCardProps) => {
                 onClick={() => setShowResults(false)}
                 className="w-full"
               >
-                返回投票
+                {t('back.to.vote')}
               </Button>
             )}
           </div>
