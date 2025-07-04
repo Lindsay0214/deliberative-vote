@@ -1,13 +1,19 @@
+
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, X } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon, Plus, X } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 
 interface CreatePollFormProps {
-  onCreatePoll: (title: string, description: string, options: string[]) => void;
+  onCreatePoll: (title: string, description: string, options: string[], expiresAt?: Date) => void;
 }
 
 const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
@@ -15,6 +21,7 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState(['', '']);
+  const [expiresAt, setExpiresAt] = useState<Date>();
 
   const addOption = () => {
     setOptions([...options, '']);
@@ -36,10 +43,11 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
     e.preventDefault();
     const validOptions = options.filter(option => option.trim() !== '');
     if (title.trim() && validOptions.length >= 2) {
-      onCreatePoll(title, description, validOptions);
+      onCreatePoll(title, description, validOptions, expiresAt);
       setTitle('');
       setDescription('');
       setOptions(['', '']);
+      setExpiresAt(undefined);
     }
   };
 
@@ -51,8 +59,11 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">{t('poll.title')}</label>
+            <Label htmlFor="title" className="block text-sm font-medium mb-2">
+              {t('poll.title')}
+            </Label>
             <Input
+              id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('poll.title.placeholder')}
@@ -61,8 +72,11 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-2">{t('poll.description')}</label>
+            <Label htmlFor="description" className="block text-sm font-medium mb-2">
+              {t('poll.description')}
+            </Label>
             <Textarea
+              id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t('poll.description.placeholder')}
@@ -71,7 +85,45 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">{t('poll.options')}</label>
+            <Label className="block text-sm font-medium mb-2">投票期限（可選）</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !expiresAt && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {expiresAt ? format(expiresAt, "PPP") : "選擇期限日期"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={expiresAt}
+                  onSelect={setExpiresAt}
+                  disabled={(date) => date < new Date()}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+            {expiresAt && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setExpiresAt(undefined)}
+                className="mt-1"
+              >
+                清除期限
+              </Button>
+            )}
+          </div>
+
+          <div>
+            <Label className="block text-sm font-medium mb-2">{t('poll.options')}</Label>
             {options.map((option, index) => (
               <div key={index} className="flex gap-2 mb-2">
                 <Input
