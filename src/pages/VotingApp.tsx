@@ -32,7 +32,7 @@ const VotingApp = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p>載入中...</p>
+          <p>{t('loading')}</p>
         </div>
       </div>
     );
@@ -74,9 +74,9 @@ const VotingApp = () => {
 
         <Tabs defaultValue="all" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="all">所有投票</TabsTrigger>
+            <TabsTrigger value="all">{t('all.polls')}</TabsTrigger>
             <TabsTrigger value="mine" disabled={!user}>
-              我的投票 {user ? `(${myPolls.length})` : ''}
+              {t('my.polls')} {user ? `(${myPolls.length})` : ''}
             </TabsTrigger>
           </TabsList>
           
@@ -88,7 +88,7 @@ const VotingApp = () => {
                 </p>
                 {!user && (
                   <p className="text-sm text-muted-foreground mt-2">
-                    請登入以建立投票
+                    {t('please.login.to.create')}
                   </p>
                 )}
               </div>
@@ -108,19 +108,19 @@ const VotingApp = () => {
             {!user ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
-                  請先登入查看您的投票
+                  {t('please.login.to.view')}
                 </p>
               </div>
             ) : myPolls.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground text-lg">
-                  您還沒有建立任何投票
+                  {t('no.my.polls')}
                 </p>
                 <Button 
                   onClick={() => setShowCreateForm(true)}
                   className="mt-4"
                 >
-                  建立第一個投票
+                  {t('create.first.poll')}
                 </Button>
               </div>
             ) : (

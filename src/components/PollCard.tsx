@@ -12,6 +12,7 @@ import { Poll } from '@/types/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { format, isAfter } from 'date-fns';
 import { zhTW } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 interface PollCardProps {
   poll: Poll;
@@ -66,10 +67,10 @@ const PollCard = ({ poll, onVote, showCreator = true }: PollCardProps) => {
             )}
           </div>
           <div className="flex flex-col items-end gap-2">
-            {isExpired && <Badge variant="destructive">已截止</Badge>}
+            {isExpired && <Badge variant="destructive">{t('expired')}</Badge>}
             {poll.expires_at && !isExpired && (
               <Badge variant="outline">
-                截止: {format(new Date(poll.expires_at), 'MM/dd HH:mm', { locale: zhTW })}
+                {t('expires.at')}: {format(new Date(poll.expires_at), 'MM/dd HH:mm', { locale: zhTW })}
               </Badge>
             )}
           </div>
@@ -77,7 +78,7 @@ const PollCard = ({ poll, onVote, showCreator = true }: PollCardProps) => {
         
         {showCreator && (
           <div className="flex items-center gap-2 pt-2 text-sm text-muted-foreground">
-            <span>發起時間: {format(new Date(poll.created_at), 'yyyy/MM/dd HH:mm', { locale: zhTW })}</span>
+            <span>{t('created.at')}: {format(new Date(poll.created_at), 'yyyy/MM/dd HH:mm', { locale: zhTW })}</span>
           </div>
         )}
       </CardHeader>
@@ -98,7 +99,7 @@ const PollCard = ({ poll, onVote, showCreator = true }: PollCardProps) => {
 
             <div>
               <Label className="block text-sm font-medium mb-2">
-                {t('vote.reason')} (加倍權重)
+                {t('vote.reason')}
               </Label>
               <Textarea
                 value={reason}
@@ -184,9 +185,5 @@ const PollCard = ({ poll, onVote, showCreator = true }: PollCardProps) => {
     </Card>
   );
 };
-
-function cn(...classes: (string | undefined | false)[]) {
-  return classes.filter(Boolean).join(' ');
-}
 
 export default PollCard;

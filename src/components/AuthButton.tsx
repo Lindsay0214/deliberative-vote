@@ -3,12 +3,14 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth } from '@/hooks/useAuth';
 import { LogIn, LogOut } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 export default function AuthButton() {
   const { user, profile, loading, signInWithGoogle, signOut } = useAuth();
+  const { t } = useTranslation();
 
   if (loading) {
-    return <Button variant="outline" disabled>載入中...</Button>;
+    return <Button variant="outline" disabled>{t('loading')}</Button>;
   }
 
   if (user) {
@@ -27,7 +29,7 @@ export default function AuthButton() {
         </div>
         <Button variant="outline" size="sm" onClick={signOut}>
           <LogOut className="h-4 w-4 mr-2" />
-          登出
+          {t('logout')}
         </Button>
       </div>
     );
@@ -36,7 +38,7 @@ export default function AuthButton() {
   return (
     <Button onClick={signInWithGoogle} variant="outline">
       <LogIn className="h-4 w-4 mr-2" />
-      使用 Google 登入
+      {t('login.with.google')}
     </Button>
   );
 }

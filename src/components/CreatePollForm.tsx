@@ -85,7 +85,7 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
           </div>
 
           <div>
-            <Label className="block text-sm font-medium mb-2">投票期限（可選）</Label>
+            <Label className="block text-sm font-medium mb-2">{t('poll.expires')}</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -96,7 +96,7 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {expiresAt ? format(expiresAt, "PPP") : "選擇期限日期"}
+                  {expiresAt ? format(expiresAt, "PPP") : t('select.expire.date')}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
@@ -117,7 +117,7 @@ const CreatePollForm = ({ onCreatePoll }: CreatePollFormProps) => {
                 onClick={() => setExpiresAt(undefined)}
                 className="mt-1"
               >
-                清除期限
+                {t('clear.expire')}
               </Button>
             )}
           </div>

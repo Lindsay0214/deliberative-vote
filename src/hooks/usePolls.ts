@@ -4,6 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Poll, PollOption, Vote } from '@/types/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 
 export function usePolls() {
   const [polls, setPolls] = useState<Poll[]>([]);
@@ -11,6 +12,7 @@ export function usePolls() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const fetchAllPolls = async () => {
     try {
@@ -19,18 +21,19 @@ export function usePolls() {
         .select(`
           *,
           options:poll_options(*),
-          votes(*)
+          votes(*),
+          profiles!polls_creator_id_fkey(name, avatar_url)
         `)
         .eq('is_active', true)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
       setPolls(data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching polls:', error);
       toast({
-        title: "錯誤",
-        description: "無法載入投票",
+        title: t('error'),
+        description: t('error.load.polls'),
         variant: "destructive"
       });
     } finally {
@@ -67,8 +70,8 @@ export function usePolls() {
   ) => {
     if (!user) {
       toast({
-        title: "請先登入",
-        description: "您需要登入才能建立投票",
+        title: t('please.login.to.create.poll'),
+        description: t('login.required.create'),
         variant: "destructive"
       });
       return null;
@@ -102,8 +105,8 @@ export function usePolls() {
       if (optionsError) throw optionsError;
 
       toast({
-        title: "投票建立成功",
-        description: "您的投票已經建立並發布"
+        title: t('poll.created'),
+        description: t('poll.created.desc')
       });
 
       // Refresh polls
@@ -113,8 +116,8 @@ export function usePolls() {
     } catch (error) {
       console.error('Error creating poll:', error);
       toast({
-        title: "建立失敗",
-        description: "無法建立投票，請稍後再試",
+        title: t('poll.create.failed'),
+        description: t('poll.create.failed.desc'),
         variant: "destructive"
       });
       return null;
@@ -124,8 +127,8 @@ export function usePolls() {
   const submitVote = async (pollId: string, optionId: string, reason?: string) => {
     if (!user) {
       toast({
-        title: "請先登入",
-        description: "您需要登入才能投票",
+        title: t('please.login.to.vote'),
+        description: t('login.required.vote'),
         variant: "destructive"
       });
       return false;
@@ -145,8 +148,8 @@ export function usePolls() {
       if (error) {
         if (error.code === '23505') { // Unique constraint violation
           toast({
-            title: "已經投過票",
-            description: "您已經在這個投票中投過票了",
+            title: t('already.voted'),
+            description: t('already.voted.desc'),
             variant: "destructive"
           });
         } else {
@@ -156,8 +159,8 @@ export function usePolls() {
       }
 
       toast({
-        title: "投票成功",
-        description: "您的投票已經記錄"
+        title: t('voted.successfully'),
+        description: t('vote.recorded')
       });
 
       // Refresh polls
@@ -166,8 +169,8 @@ export function usePolls() {
     } catch (error) {
       console.error('Error submitting vote:', error);
       toast({
-        title: "投票失敗",
-        description: "無法提交投票，請稍後再試",
+        title: t('vote.failed'),
+        description: t('vote.failed.desc'),
         variant: "destructive"
       });
       return false;
