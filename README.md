@@ -1,73 +1,48 @@
-# Welcome to your Lovable project
+# Deliberative Vote
 
-## Project info
+A **React and TypeScript voting prototype** exploring a simple idea: let participants explain their choices alongside their votes.
 
-**URL**: https://lovable.dev/projects/4e78facf-13b7-4388-8532-67e7ed99a017
+Created with Lovable, using Vite, shadcn/ui, Tailwind CSS, and Supabase. This repository documents the prototype's implementation; it does not claim production usage or independently authored implementation of every component.
 
-## How can I edit this code?
+## Implemented flows
 
-There are several ways of editing your application.
+- Google sign-in through Supabase Auth.
+- Create a poll with a title, description, options, and optional expiry date.
+- Browse active polls and a separate list of the signed-in user's polls.
+- Submit a vote with an optional reason; the client assigns weight 2 to a vote with a reason and 1 otherwise.
+- Display results and switch between Chinese and English UI text.
+- Show loading, empty, success, and error feedback.
 
-**Use Lovable**
+## Code guide
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4e78facf-13b7-4388-8532-67e7ed99a017) and start prompting.
+| File | Responsibility |
+| --- | --- |
+| [VotingApp.tsx](src/pages/VotingApp.tsx) | Main screen and poll tabs |
+| [CreatePollForm.tsx](src/components/CreatePollForm.tsx) | Poll creation form |
+| [PollCard.tsx](src/components/PollCard.tsx) | Voting and result presentation |
+| [usePolls.ts](src/hooks/usePolls.ts) | Supabase reads/writes and refresh logic |
+| [useAuth.tsx](src/hooks/useAuth.tsx) | Authentication state and Google sign-in |
+| [i18n.ts](src/lib/i18n.ts) | UI translations |
+| [migrations](supabase/migrations) | Database schema and policies |
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+## Run locally
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+npm install
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application depends on Supabase. For an independent setup, configure your own project, review and apply the migration in `supabase/migrations`, enable Google authentication with appropriate redirect URLs, and update `src/integrations/supabase/client.ts` to point to that project. Do not use a service-role key in browser code.
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```sh
+npm run build
+npm run lint
+```
 
-**Use GitHub Codespaces**
+There is currently no automated test script in `package.json`. Live authentication and database availability are not guaranteed by this README.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Prototype boundaries
 
-## What technologies are used for this project?
+Weighted voting is an experimental product rule, not a measure of argument quality. Server-side enforcement of voting rules and expiry requires validation before production use.
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/4e78facf-13b7-4388-8532-67e7ed99a017) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Poll and option creation currently use separate requests. A next iteration should make creation atomic, preserve form input when a request fails, and add tests for duplicate votes, expiry, authentication, and error recovery.
